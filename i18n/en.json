@@ -1,0 +1,11 @@
+{
+    "surl": "Mediawiki Page URL Shortener",
+    "surl-desc": "Shorten the URL of a MediaWiki page.",
+    "surl-link": "• Shorten the current page URL",
+    "surl-title": "Generate URL Shorten",
+    "surl-copy": "Copy",
+    "surl-invalid-id": "An invalid oldid value was entered. This is caused by requesting an oldid value that doesn't exist, or by not receiving an oldid value when accessing the SURL special documentation page directly.",
+    "surl-not-found": "The specified oldid could not be found. Please check the oldid value and try again.",
+    "surl-provide-oldid": "Please provide an oldid. This is also an issue with just accessing the SURL special page.",
+    "surl-btn-close": "Close"
+}

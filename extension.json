@@ -1,0 +1,45 @@
+{
+  "name": "SURL",
+  "author": [
+    "Jeong Gaon"
+  ],
+  "url": "https://www.gaon.xyz/mw_extensions",
+  "descriptionmsg": "surl-desc",
+  "version": "1.0",
+  "license-name": "MIT",
+  "type": "other",
+  "AutoloadClasses": {
+    "SURLHooks": "includes/SURLHooks.php",
+    "SURL": "includes/SURL.php"
+  },
+  "config": {
+    "wgShortURLoldIDPath": {
+      "value": "s",
+      "description": "Path for the shortened URL of oldid"
+    },
+	"wgShortURLbase62OldIdPath": {
+      "value": "a",
+      "description": "Path for the shortened URL of base62Old"
+    }
+  },
+  "ResourceModules": {
+    "ext.SURL": {
+      "scripts": [ "resources/ext.SURL.js", "resources/sweetalert2/sweetalert2.min.js" ],
+      "styles": [ "resources/ext.SURL.css", "resources/sweetalert2/sweetalert2.min.css" ],
+      "dependencies": [ "mediawiki.page.ready", "oojs-ui" ],
+      "localBasePath": "",
+      "remoteExtPath": "SURL",
+      "messages": [ "surl-title", "surl-copy", "surl-copy", "surl-btn-close", "surl-btn-what-is-oldid", "surl-oldid-description", "surl-btn-show-shorten-url" ]
+    }
+  },
+  "Hooks": {
+    "BeforePageDisplay": "SURLHooks::onBeforePageDisplay"
+  },
+  "SpecialPages": {
+    "SURL": "SURL"
+  },
+  "MessagesDirs": {
+    "SURL": [ "i18n" ]
+  },
+  "manifest_version": 2
+}

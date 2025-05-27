@@ -1,0 +1,22 @@
+.styled-link {
+    display: block;
+	margin-top: 10px;
+}
+
+#surl_type_select {
+	display: flex;
+	justify-content: center;
+}
+
+#short-url {
+	text-align: center;
+	width: 90%;
+}
+
+#swal2-html-container {
+    overflow: hidden;
+}
+
+#oldId_label {
+	margin-right: 15px;
+}
