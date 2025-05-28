@@ -1,7 +1,11 @@
 <?php
+use MediaWiki\MediaWikiServices;
+use MediaWiki\Revision\RevisionRecord;
+
 class SURLHooks {
     public static function onBeforePageDisplay(OutputPage &$out, Skin &$skin) {
         $out->addModules('ext.SURL');
+
         $title = $out->getTitle();
         $oldId = $out->getRevisionId();
 
@@ -9,52 +13,53 @@ class SURLHooks {
             return true;
         }
 
-        $baseUrl = parse_url(wfExpandUrl(wfScript()), PHP_URL_SCHEME) . '://' . parse_url(wfExpandUrl(wfScript()), PHP_URL_HOST);
-        $base62OldId = self::base_convert_arbitrary($oldId, 10, 62);
-        $urlOldId = $baseUrl . '/' . $GLOBALS['wgShortURLoldIDPath'] . '/' . $oldId;
-        $urlBase62OldId = $baseUrl . '/' . $GLOBALS['wgShortURLbase62OldIdPath'] . '/' . $base62OldId;
-		$surlText = wfMessage('surl-link')->text();
+        global $wgServer, $wgShortURLoldIDPath, $wgShortURLbase62OldIdPath;
 
-        $out->addHTML('<a id="surl-link" href="#" class="styled-link">' . htmlspecialchars($surlText) . '</a>');
+        $baseUrl = rtrim($wgServer, '/');
+        $base62OldId = self::base_convert_arbitrary($oldId, 10, 62);
+
+        $urlOldId = $baseUrl . '/' . $wgShortURLoldIDPath . '/' . $oldId;
+        $urlBase62OldId = $baseUrl . '/' . $wgShortURLbase62OldIdPath . '/' . $base62OldId;
+
+        $surlText = wfMessage('surl-link')->text();
+
+        // HTML 링크
+        $surlLink = '<a id="surl-link" href="#" class="styled-link" data-surl-oldid="' .
+                    htmlspecialchars($urlOldId) . '" data-surl-base62="' .
+                    htmlspecialchars($urlBase62OldId) . '">' .
+                    htmlspecialchars($surlText) . '</a>';
+
+        // <template>로 HTML 삽입 및 JS 분리
+        $templateId = 'surl-link-template';
+        $out->addHTML('<template id="' . $templateId . '">' . $surlLink . '</template>');
+
+        // 안전하게 JavaScript 삽입
+        $out->addInlineScript(<<<EOT
+document.addEventListener("DOMContentLoaded", function() {
+    var copyrightElement = document.querySelector(".footer-info-copyright");
+    var template = document.getElementById("$templateId");
+    if (copyrightElement && template) {
+        copyrightElement.innerHTML += " | " + template.innerHTML;
+    }
+});
+EOT);
+
+        // JS 변수로 URL 전달
         $out->addJsConfigVars('surlOldId', $urlOldId);
         $out->addJsConfigVars('surlBase62OldId', $urlBase62OldId);
-
         return true;
     }
 
+    // GMP를 이용한 base 변환
     private static function base_convert_arbitrary($number, $fromBase, $toBase) {
         $digits = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $number = strval($number);
-        $length = strlen($number);
+        $num = gmp_init($number, $fromBase);
         $result = '';
-        $nibbles = [];
-
-        for ($i = 0; $i < $length; ++$i) {
-            $nibbles[] = strpos($digits, $number[$i]);
+        while (gmp_cmp($num, 0) > 0) {
+            list($num, $rem) = gmp_div_qr($num, $toBase);
+            $result = $digits[gmp_intval($rem)] . $result;
         }
-
-        do {
-            $value = 0;
-            $newlen = 0;
-
-            for ($i = 0; $i < $length; ++$i) {
-                if (isset($nibbles[$i])) {
-                    $value = $value * $fromBase + $nibbles[$i];
-                }
-
-                if ($value >= $toBase) {
-                    $nibbles[$newlen++] = (int) ($value / $toBase);
-                    $value %= $toBase;
-                } else if ($newlen > 0) {
-                    $nibbles[$newlen++] = 0;
-                }
-            }
-
-            $length = $newlen;
-            $result = $digits[$value] . $result;
-        } while ($newlen != 0);
-
-        return $result;
+        return $result ?: '0';
     }
 }
 
@@ -65,16 +70,27 @@ class SpecialSURL extends SpecialPage {
 
     public function execute($par) {
         $this->setHeaders();
-        $oldId = intval($par);
-        $rev = Revision::newFromId($oldId);
+        $out = $this->getOutput();
 
-        if ($rev) {
-            $this->getOutput()->redirect($rev->getTitle()->getFullURL());
+        $oldId = intval($par);
+        if ($oldId <= 0) {
+            $out->addHTML(htmlspecialchars(wfMessage('surl-invalid-id')->text()));
+            return;
+        }
+
+        $services = MediaWikiServices::getInstance();
+        $revLookup = $services->getRevisionLookup();
+        $rev = $revLookup->getRevisionById($oldId);
+
+        if ($rev instanceof RevisionRecord) {
+            $title = $rev->getPage()->getTitle();
+            $out->redirect($title->getFullURL());
         } else {
             $invalidIdText = wfMessage('surl-invalid-id')->text();
-            $this->getOutput()->addHTML(htmlspecialchars($invalidIdText));
+            $out->addHTML(htmlspecialchars($invalidIdText));
         }
     }
 }
 
+// SpecialPage 등록
 $wgSpecialPages['SURL'] = 'SpecialSURL';

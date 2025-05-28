@@ -7,5 +7,6 @@
     "surl-invalid-id": "잘못된 oldid값을 입력받았습니다. 이 문제는 존재하지 않는 oldid값을 요청하면 발생합니다. 또는 SURL 특수 문서 페이지에 직접 접속하면 oldid값을 입력받지 못해 생기는 문제입니다.",
     "surl-not-found": "잘못된 oldid값을 입력받았습니다. 이 문제는 존재하지 않는 oldid값을 요청하면 발생합니다. oldid값을 확인 후 다시 시도해 보세요.",
     "surl-provide-oldid": "oldid값이 입력되지 않았습니다. SURL 특수 문서 페이지에 직접 접속하면 oldid값을 입력받지 못해 생기는 문제이기도 합니다.",
-    "surl-btn-close": "닫기"
+    "surl-btn-close": "닫기",
+	"surl-copy-success": "복사 완료!"
 }

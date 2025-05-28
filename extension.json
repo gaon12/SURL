@@ -24,16 +24,17 @@
   },
   "ResourceModules": {
     "ext.SURL": {
-      "scripts": [ "resources/ext.SURL.js", "resources/sweetalert2/sweetalert2.min.js" ],
-      "styles": [ "resources/ext.SURL.css", "resources/sweetalert2/sweetalert2.min.css" ],
+      "scripts": [ "resources/ext.SURL.js"],
+      "styles": [ "resources/ext.SURL.css"],
       "dependencies": [ "mediawiki.page.ready", "oojs-ui" ],
       "localBasePath": "",
       "remoteExtPath": "SURL",
-      "messages": [ "surl-title", "surl-copy", "surl-copy", "surl-btn-close", "surl-btn-what-is-oldid", "surl-oldid-description", "surl-btn-show-shorten-url" ]
+      "messages": [ "surl-title", "surl-copy", "surl-btn-close", "surl-btn-what-is-oldid", "surl-oldid-description", "surl-btn-show-shorten-url", "surl-copy-success" ]
     }
   },
   "Hooks": {
-    "BeforePageDisplay": "SURLHooks::onBeforePageDisplay"
+    "BeforePageDisplay": "SURLHooks::onBeforePageDisplay",
+	"SkinTemplateOutputPageBeforeExec": "SURLHooks::onSkinTemplateOutputPageBeforeExec"
   },
   "SpecialPages": {
     "SURL": "SURL"

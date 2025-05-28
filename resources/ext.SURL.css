@@ -1,22 +1,137 @@
-.styled-link {
-    display: block;
-	margin-top: 10px;
+/* 오버레이 */
+.surl-modal-overlay {
+  position: fixed;
+  inset: 0;            /* top:0; right:0; bottom:0; left:0 */
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 10000;
 }
 
-#surl_type_select {
-	display: flex;
-	justify-content: center;
+/* 다이얼로그 박스 */
+.surl-modal-dialog {
+  background: var(--mw-ui-overlay, #fff);
+  color: var(--mw-ui-foreground, #000);
+  border-radius: 0.5rem;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-#short-url {
-	text-align: center;
-	width: 90%;
+/* 헤더 */
+.surl-modal-header {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--mw-ui-border, #ddd);
+}
+.surl-modal-icon {
+  font-size: 1.5rem;
+  margin-right: 0.75rem;
+}
+.surl-modal-title {
+  font-size: 1.25rem;
+  margin: 0;
 }
 
-#swal2-html-container {
-    overflow: hidden;
+/* 본문 */
+.surl-modal-body {
+  padding: 1rem 1.25rem;
+  text-align: center;
+}
+.surl-modal-input {
+  width: 90%;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border: 1px solid var(--mw-ui-border, #ccc);
+  border-radius: 0.25rem;
 }
 
-#oldId_label {
-	margin-right: 15px;
+/* 푸터(버튼 그룹) */
+.surl-modal-footer {
+  display: flex;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--mw-ui-border, #ddd);
+  background: var(--mw-ui-background, #f9f9f9);
+}
+.surl-btn {
+  flex: 1;
+  padding: 0.75rem;
+  margin: 0 0.25rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: filter 0.2s;
+}
+.surl-btn:hover { filter: brightness(0.9); }
+.surl-btn-confirm {
+  background: var(--mw-ui-contrast, #0177c1);
+  color: #fff;
+}
+.surl-btn-cancel {
+  background: var(--mw-ui-inside, #e1e1e1);
+  color: var(--mw-ui-foreground, #000);
+}
+
+/* 반응형: 작은 화면에서는 여백 확보 */
+@media (max-width: 400px) {
+  .surl-modal-dialog { max-width: calc(100% - 2rem); }
+}
+
+/* 다크모드 연동 */
+@media (prefers-color-scheme: dark) {
+  .surl-modal-overlay { background: rgba(0,0,0,0.6); }
+  .surl-modal-dialog {
+    background: var(--mw-ui-overlay, #2b2b2b);
+    color: var(--mw-ui-foreground, #e1e1e1);
+  }
+  .surl-modal-header, .surl-modal-footer {
+    border-color: var(--mw-ui-border, #444);
+  }
+  .surl-modal-input {
+    background: var(--mw-ui-background, #3a3a3a);
+    border-color: var(--mw-ui-border, #555);
+    color: var(--mw-ui-foreground, #e1e1e1);
+  }
+  .surl-btn-cancel { background: var(--mw-ui-inside, #555); }
+}
+
+/* 토스트 컨테이너 */
+#surl-toast-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 11000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+/* 토스트 메시지 */
+.surl-toast {
+  background: var(--mw-ui-contrast, #0177c1);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  margin-top: 0.5rem;
+  border-radius: 0.25rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: surl-fadein 0.3s forwards,
+             surl-fadeout 0.5s 2.5s forwards;
+}
+
+/* 애니메이션 */
+@keyframes surl-fadein {
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes surl-fadeout {
+  to { opacity: 0; transform: translateY(-10px); }
 }
