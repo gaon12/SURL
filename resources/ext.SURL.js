@@ -34,10 +34,26 @@ $(function () {
         setTimeout(() => { $toast.remove(); }, 3000);
     }
 
-    // 4) 푸터에 삽입된 #surl-link 클릭 핸들러
-    $('#surl-link').on('click', function (e) {
+    // 4) #surl-link 클릭 핸들러 (동적 생성에도 대응하도록 위임)
+    $(document).on('click', '#surl-link', function (e) {
         e.preventDefault();
-        $input.val( mw.config.get('surlBase62OldId') );
+
+        // 4-1) data-* 속성 우선 사용 (스킨/캐시 영향 최소화)
+        const base62FromData = this.getAttribute('data-surl-base62') || '';
+        const oldIdFromData  = this.getAttribute('data-surl-oldid') || '';
+
+        // 4-2) JS 설정값도 보조적으로 사용
+        const base62FromConfig = mw.config.get('surlBase62OldId') || '';
+        const oldIdFromConfig  = mw.config.get('surlOldId') || '';
+
+        const shortUrl =
+            base62FromData ||
+            base62FromConfig ||
+            oldIdFromData ||
+            oldIdFromConfig ||
+            '';
+
+        $input.val(shortUrl);
         $overlay.removeAttr('hidden');
     });
 

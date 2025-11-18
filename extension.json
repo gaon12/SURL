@@ -26,7 +26,7 @@
     "ext.SURL": {
       "scripts": [ "resources/ext.SURL.js"],
       "styles": [ "resources/ext.SURL.css"],
-      "dependencies": [ "mediawiki.page.ready", "oojs-ui" ],
+      "dependencies": [ "mediawiki.page.ready" ],
       "localBasePath": "",
       "remoteExtPath": "SURL",
       "messages": [ "surl-title", "surl-copy", "surl-btn-close", "surl-btn-what-is-oldid", "surl-oldid-description", "surl-btn-show-shorten-url", "surl-copy-success" ]

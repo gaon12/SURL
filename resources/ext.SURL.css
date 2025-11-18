@@ -10,6 +10,11 @@
   z-index: 10000;
 }
 
+/* hidden 속성이 있을 때는 강제로 숨김 처리 */
+.surl-modal-overlay[hidden] {
+  display: none !important;
+}
+
 /* 다이얼로그 박스 */
 .surl-modal-dialog {
   background: var(--mw-ui-overlay, #fff);
